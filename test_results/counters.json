@@ -1,0 +1,23 @@
+{
+  "run_name": "hf_live_test",
+  "counters": {
+    "raw_labels_seen": {},
+    "mapped_labels_seen": {},
+    "detected_seen": {
+      "phone": 2188,
+      "dob": 2072,
+      "email": 893,
+      "iban": 325,
+      "passport": 193,
+      "ipv4": 163,
+      "credit_card": 99,
+      "driver_license": 51,
+      "api_key": 19,
+      "tckn": 14,
+      "imei": 3,
+      "mac": 1
+    },
+    "intersection_seen": {},
+    "hf_samples_total": 7000
+  }
+}

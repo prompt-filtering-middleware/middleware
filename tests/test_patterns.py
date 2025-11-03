@@ -5,7 +5,7 @@ def types_of(text: str):
     return {h["type"] for h in detect_all(text)}
 
 def test_detect_email_card():
-    t = "Mail: a@b.com kart: 4111 1111 1111 1111"
+    t = "Mail: a@b.com card: 4111 1111 1111 1111"
     ts = types_of(t)
     assert "email" in ts
     assert "credit_card" in ts

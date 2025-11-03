@@ -42,9 +42,7 @@ AWS_SECRET_KEY_40 = re.compile(r"\b[0-9a-zA-Z/+]{40}\b")  # high FP risk
 HEX_32_64 = re.compile(r"\b[0-9a-fA-F]{32,64}\b")
 JWT_CANDIDATE = re.compile(r"\b[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\b")
 
-# -----------------------
 # Helpers
-# -----------------------
 def luhn_ok(s: str) -> bool:
     digits = [int(d) for d in re.sub(r"\D", "", s)]
     if not (13 <= len(digits) <= 19):
@@ -62,25 +60,22 @@ def luhn_ok(s: str) -> bool:
 def find_api_secrets(text: str) -> List[Dict]:
     hits: List[Dict] = []
 
-    # 1) AWS Access Key
     for m in AWS_ACCESS_KEY.finditer(text):
         hits.append({"type": "api_key.aws_access_key", "span": m.span(), "value": m.group()})
 
-    # 2) 40-char secret-ish (heuristic)
     for m in AWS_SECRET_KEY_40.finditer(text):
         s, e = m.span()
         window = text[max(0, s - 60) : min(len(text), e + 60)]
         if API_KEY_WORDS.search(window):
             hits.append({"type": "api_key.potential_secret", "span": (s, e), "value": m.group()})
 
-    # 3) Hex blob (32–64) → sadece anahtar kelime yakınsa işaretleyelim
+
     for m in HEX_32_64.finditer(text):
         s, e = m.span()
         window = text[max(0, s - 60) : min(len(text), e + 60)]
         if API_KEY_WORDS.search(window):
             hits.append({"type": "api_key.hex", "span": (s, e), "value": m.group()})
 
-    # 4) JWT adayı → Authorization/Bearer/keywords yakınsa
     for m in JWT_CANDIDATE.finditer(text):
         s, e = m.span()
         window = text[max(0, s - 80) : min(len(text), e + 80)]
@@ -126,7 +121,6 @@ def detect_all(raw_text: str) -> List[Dict]:
     _append_hits(hits, IMEI, text, "imei")
 
     # Identities (heuristic)
-
     _append_hits(hits, PASSPORT, text, "passport")
 
     # context-dependent for driver license
