@@ -3,7 +3,7 @@ from typing import Dict, List, Tuple
 # Basit enforcement map (PoC):
 #  - block: critic leak (api_key, card, TCKN, IBAN, password etc.)
 #  - mask : personal but not critic (email, phone, dob, ip, mac etc.)
-#  - warn : high FP risk (name, etc.) - just a warning
+#  - warn : high FP risk - just a warning
 POLICY: Dict[str, str] = {
     "api_key": "block",
     "api_key.aws_access_key": "block",
@@ -19,6 +19,9 @@ POLICY: Dict[str, str] = {
     "email": "mask",
     "phone": "mask",
     "dob": "mask",
+    "ssn": "block",
+    "health": "mask",
+    
 
     "ipv4": "mask",
     "mac": "mask",

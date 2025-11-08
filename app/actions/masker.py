@@ -46,6 +46,12 @@ def _mask_value(hit_type: str, val: str) -> str:
 
     if hit_type in {"driver_license"}:
         return "[license masked]"
+    
+    if hit_type in {"health"}:
+        return "[health info masked]"
+
+    if hit_type == "ssn":
+        return "***-**-" + s[-4:]
 
     return "[masked]"
 
