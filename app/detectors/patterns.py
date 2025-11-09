@@ -9,6 +9,8 @@ def compact_digits(s: str) -> str:
 
 # Regex patterns
 EMAIL = re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b")
+SSN = re.compile(r"\b\d{3}-\d{2}-\d{4}\b")
+STRIPE_SECRET = re.compile(r"\bsk-(?:live|test)-[A-Za-z0-9]{10,}\b", re.IGNORECASE)
 
 PHONE_CANDIDATE = re.compile(
     r"""
@@ -29,7 +31,6 @@ HEALTH_KEYWORDS = re.compile(
 GLOBAL_IBAN = re.compile(r"\b[A-Z]{2}[0-9]{2}[A-Z0-9]{10,30}\b", re.IGNORECASE)
 CC_CANDIDATE = re.compile(r"\b(?:\d[ \-]*?){13,19}\b")
 TCKN = re.compile(r"\b\d{11}\b")
-SSN = re.compile(r"\b\d{3}-\d{2}-\d{4}\b")
 DOB1 = re.compile(r"\b(19|20)\d{2}[-/.](0[1-9]|1[0-2])[-/.](0[1-9]|[12]\d|3[01])\b")
 DOB2 = re.compile(r"\b(0[1-9]|[12]\d|3[01])[-/.](0[1-9]|1[0-2])[-/.](19|20)\d{2}\b")
 
@@ -136,6 +137,8 @@ def detect_all(raw_text: str) -> List[Dict]:
 
     # Basic PII
     _append_hits(hits, EMAIL, text, "email")
+    _append_hits(hits, SSN, text, "ssn")
+
     hits.extend(find_phones(text))                      
     _append_hits(hits, GLOBAL_IBAN, text, "iban")
     _append_hits(hits, TCKN, text, "tckn")
@@ -156,6 +159,7 @@ def detect_all(raw_text: str) -> List[Dict]:
     _append_hits(hits, IMEI, text, "imei")
 
     # Identities (heuristic)
+    _append_hits(hits, STRIPE_SECRET, text, "api_key.stripe")
     _append_hits(hits, PASSPORT, text, "passport")
 
     # context-dependent for driver license

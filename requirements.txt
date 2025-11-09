@@ -4,3 +4,5 @@ pydantic
 datasets
 pytest
 logging
+sentence-transformers
+python-dotenv
