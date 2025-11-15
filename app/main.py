@@ -32,7 +32,7 @@ app = FastAPI(title="LLM Security Gateway", version="0.4.3")
 
 # Match type to dataset category
 DATASET_CATEGORY_MAP: Dict[str, str] = {
-    # PII
+    # PII / IDs
     "credit_card": "credit_card",
     "iban": "bank_account",
     "tckn": "tckn",
@@ -47,7 +47,16 @@ DATASET_CATEGORY_MAP: Dict[str, str] = {
     "ssn": "ssn",
     "health": "health",
     "address": "address",
-    # Secrets
+    "medical_record_number": "medical_record_number",
+    "vehicle_registration": "vehicle_registration",
+    "password": "password",
+    "qr_code": "qr_code",
+    "cryptocurrency_wallet": "cryptocurrency_wallet",
+    "2fa_link": "2fa_link",
+    "employment_id": "employment_id",
+    "serial_number": "serial_number",
+    "pin": "pin",
+    "national_insurance": "national_insurance",
     "api_key": "api_key",
     "api_key.aws_access_key": "api_key",
     "api_key.potential_secret": "api_key",
@@ -61,13 +70,21 @@ def _map_category(htype: str) -> Optional[str]:
     return DATASET_CATEGORY_MAP.get(htype.split(".")[0])
 
 PRIORITY_ORDER = [
-    "api_key",        # stripe keys, aws keys
+    "api_key",        
     "ssn",
     "credit_card",
     "bank_account",
     "tckn",
     "passport",
     "driver_license",
+    "medical_record_number",
+    "cryptocurrency_wallet",
+    "2fa_link",
+    "password",
+    "pin",
+    "vehicle_registration",
+    "employment_id",
+    "serial_number",
     "email",
     "phone",
     "address",

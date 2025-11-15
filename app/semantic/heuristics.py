@@ -1,24 +1,37 @@
 import re
 from typing import List
 
-_ADVERSARIAL_PATTERNS = [
-    "ignore previous instructions", "ignore all prior instructions",
-    "ignore instructions",  
-    "bypass the rules", "jailbreak the model", "reveal the system prompt",
-    "show system prompt", "leak the prompt", "disable safety", "override the policy",
-    "önceki talimatları görmezden gel", "kuralları yok say", "güvenlik kontrollerini atla",
-    "sistem yönergesini göster",
+ADVERSARIAL_PATTERNS = [
+    r"ignore\s+previous\s+instructions",
+    r"ignore\s+all\s+prior\s+instructions",
+    r"bypass\s+the\s+rules",
+    r"jailbreak",
+    r"dev\s*mode",
+    r"print\s+the\s+hidden\s+prompt",
+    r"output\s+your\s+system\s+prompt",
+    r"override\s+content\s+policy",
+    r"disable\s+safety",
+    r"prompt\s+injection",
+    r"hidden\s+(info|information|data)",    
+    r"secret\d{3,}",                        
+    r"reveal\s+(the\s+)?secret",             
+    r"expose\s+(the\s+)?hidden",             
 ]
 
 _ADDRESS_HINTS = [
     "home address is", "deliver to", "ship to", "street", "road", "avenue", "ave",
     "postal code", "zip code",
-    "ev adresim", "teslimat adresi", "posta kodu", "mahalle", "cadde", "sokak",
 ]
 
+ADVERSARIAL_REGEX = [re.compile(p, re.IGNORECASE) for p in ADVERSARIAL_PATTERNS]
+
+
 def is_adversarial(text: str) -> bool:
-    t = text.lower()
-    return any(p in t for p in _ADVERSARIAL_PATTERNS)
+    for r in ADVERSARIAL_REGEX:
+        if r.search(text):
+            return True
+    return False
+
 
 def is_address_like(text: str) -> bool:
     t = text.lower()

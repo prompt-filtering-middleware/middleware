@@ -50,6 +50,30 @@ AWS_SECRET_KEY_40 = re.compile(r"\b[0-9a-zA-Z/+]{40}\b")  # high FP risk
 HEX_32_64 = re.compile(r"\b[0-9a-fA-F]{32,64}\b")
 JWT_CANDIDATE = re.compile(r"\b[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\b")
 
+MEDICAL_RECORD_NUMBER = re.compile(r"\bMRN[- ]?\d{5,10}\b", re.IGNORECASE)
+
+VEHICLE_REG = re.compile(r"\b[A-Z]{2,3}-\d{3,4}\b")
+
+PASSWORD_KEYWORDS = re.compile(
+    r"\b(password|passcode|access\s*code|access\s*key|temporary\s*access\s*code)\b",
+    re.IGNORECASE,
+)
+
+QRDATA_CODE = re.compile(r"\bQRDATA-\d{3,}\b", re.IGNORECASE)
+
+CRYPTO_WALLET = re.compile(r"\b0x[0-9a-fA-F]{8,64}\b")
+
+TWO_FA_URL = re.compile(r"https?://[^\s]*2fa[^\s]*recovery[^\s]*", re.IGNORECASE)
+
+EMPLOYMENT_ID = re.compile(r"\bE\d{5,6}\b")
+
+SERIAL_NUMBER = re.compile(r"\bSN\d{5,10}\b", re.IGNORECASE)
+
+PIN_PATTERN = re.compile(r"\bPIN\b[^\d]{0,10}\d{4,6}\b", re.IGNORECASE)
+
+NATIONAL_INSURANCE = re.compile(r"\b[A-CEGHJ-PR-TW-Z]{2}\d{6}[A-D]\b")
+
+
 # Helpers
 def luhn_ok(s: str) -> bool:
     digits = [int(d) for d in re.sub(r"\D", "", s)]
@@ -77,7 +101,6 @@ def find_api_secrets(text: str) -> List[Dict]:
         if API_KEY_WORDS.search(window):
             hits.append({"type": "api_key.potential_secret", "span": (s, e), "value": m.group()})
 
-
     for m in HEX_32_64.finditer(text):
         s, e = m.span()
         window = text[max(0, s - 60) : min(len(text), e + 60)]
@@ -91,6 +114,7 @@ def find_api_secrets(text: str) -> List[Dict]:
             hits.append({"type": "api_key.jwt", "span": (s, e), "value": m.group()})
 
     return hits
+
 
 def find_phones(text: str) -> List[Dict]:
 
@@ -139,7 +163,6 @@ def detect_all(raw_text: str) -> List[Dict]:
     _append_hits(hits, EMAIL, text, "email")
     _append_hits(hits, SSN, text, "ssn")
 
-    hits.extend(find_phones(text))                      
     _append_hits(hits, GLOBAL_IBAN, text, "iban")
     _append_hits(hits, TCKN, text, "tckn")
 
@@ -169,21 +192,62 @@ def detect_all(raw_text: str) -> List[Dict]:
         if any(k in window for k in ["ehliyet", "license", "dl#"]):
             hits.append({"type": "driver_license", "span": (s, e), "value": m.group()})
 
+    # medical_record_number (MRNxxxx)
+    _append_hits(hits, MEDICAL_RECORD_NUMBER, text, "medical_record_number")
+
+    # vehicle_registration (HSY-3830) 
+    for m in VEHICLE_REG.finditer(text):
+        hits.append({
+            "type": "vehicle_registration",
+            "span": m.span(),
+            "value": m.group()
+        })
+    # password / access code (keyword based)
+    _append_hits(hits, PASSWORD_KEYWORDS, text, "password")
+
+    # qr_code
+    _append_hits(hits, QRDATA_CODE, text, "qr_code")
+
+    # crypto wallet (0x.... + wallet context)
+    for m in CRYPTO_WALLET.finditer(text):
+        hits.append({"type": "cryptocurrency_wallet", "span": m.span(), "value": m.group()})
+
+    # 2FA recovery link
+    _append_hits(hits, TWO_FA_URL, text, "2fa_link")
+
+    # employment_id (E12345 + HR/employee context)
+    for m in EMPLOYMENT_ID.finditer(text):
+        s, e = m.span()
+        window = text[max(0, s - 40) : min(len(text), e + 40)].lower()
+        if any(k in window for k in ["employee", "hr record", "hr", "employment"]):
+            hits.append({"type": "employment_id", "span": (s, e), "value": m.group()})
+
+    # serial_number (SNXXXXXXX + device context)
+    for m in SERIAL_NUMBER.finditer(text):
+        s, e = m.span()
+        window = text[max(0, s - 40) : min(len(text), e + 40)].lower()
+        if any(k in window for k in ["serial", "device id", "device", "sn"]):
+            hits.append({"type": "serial_number", "span": (s, e), "value": m.group()})
+
+    # PIN
+    _append_hits(hits, PIN_PATTERN, text, "pin")
+
+    # national_insurance
+    _append_hits(hits, NATIONAL_INSURANCE, text, "national_insurance")
+
     # API Keys / Secrets
     hits.extend(find_api_secrets(text))
+    hits.extend(find_phones(text))
 
     for m in HEALTH_KEYWORDS.finditer(text):
         hits.append({"type": "health", "span": m.span(), "value": m.group()})
 
-
     # Deduplication
-    # Prefer the more specific one if they fall into the same span
     deduped: List[Dict] = []
     used_spans: List[Tuple[int, int]] = []
     for h in sorted(hits, key=lambda x: (x["span"][0], -(x["span"][1] - x["span"][0]))):
         s, e = h["span"]
         if any(s < ue and e > us for (us, ue) in used_spans):
-            # overlaps with an existing span
             continue
         used_spans.append((s, e))
         deduped.append(h)

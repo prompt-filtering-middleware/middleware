@@ -12,7 +12,7 @@ from app.main import app
 from app.detectors.patterns import detect_all
 
 DATASET_ENV = "TEST_DATASET"
-DEFAULT_DATASET_PATH = Path(__file__).parent / "data" / "dataset.json"
+DEFAULT_DATASET_PATH = Path(__file__).parent / "data" / "synthetic_prompt_dataset_crop.json"
 
 
 CATEGORY_TO_DETECTOR = {
@@ -73,7 +73,7 @@ logger = logging.getLogger("cases")
 
 @pytest.fixture(scope="session")
 def cases_log_path(tmp_path_factory):
-    # tests/logs/run-<ts>.jsonl
+
     logs_dir = Path("tests/logs")
     logs_dir.mkdir(parents=True, exist_ok=True)
     ts = time.strftime("%Y%m%d-%H%M%S")
@@ -85,7 +85,7 @@ def case_logger(cases_log_path):
         event = {**event, "_ts": time.time()}
         with open(cases_log_path, "a", encoding="utf-8") as f:
             f.write(json.dumps(event, ensure_ascii=False) + "\n")
-        # ayrıca konsola da kısa özet bas
+        
         logging.getLogger("cases").info(
             "%s | id=%s | cat=%s | action=%s | exp=%s",
             event.get("test"),

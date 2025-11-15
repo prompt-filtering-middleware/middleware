@@ -15,23 +15,11 @@ categories:
       - "glucose level"
       - "medical info"
       - "health record"
-      # TR
-      - "tıbbi kayıt"
-      - "kan grubu"
-      - "alerjim var"
-      - "diyabet"
-      - "tansiyon"
-      - "kolesterol"
     negatives:
       - "health benefits"
       - "healthy lifestyle tips"
       - "general healthcare system"
       - "medical fiction"
-      # TR
-      - "sağlık ipuçları"
-      - "sağlık sistemi"
-      - "sağlıklı yaşam"
-
   address:
     positives:
       - "home address is"
@@ -45,22 +33,10 @@ categories:
       - "zip code"
       - "street address"
       - "residential address"
-      # TR
-      - "ev adresim"
-      - "teslimat adresi"
-      - "kargoyu şu adrese"
-      - "daire no"
-      - "posta kodu"
-      - "mahalle cadde sokak"
     negatives:
       - "addressing the problem"
       - "memory address"
       - "IP address"   
-      
-      # TR
-      - "konuyu adreslemek"
-      - "bellek adresi"
-
   ssn:
     positives:
       - "social security number"
@@ -81,10 +57,6 @@ categories:
       - "IT60X0542811101000000123456"
       - "my bank account"
       - "account number"
-      # TR
-      - "iban"
-      - "banka hesabım"
-      - "hesap numarası"
     negatives:
       - "bank account types"
       - "how IBAN works"
@@ -98,39 +70,24 @@ categories:
       - "6011 0009 9013 9424"
       - "cvv"
       - "expiry date"
-      # TR
-      - "kredi kartı numaram"
-      - "kart numarası"
-      - "son kullanma tarihi"
-      - "cvv kodu"
     negatives:
       - "credit card benefits"
       - "how credit cards work"
-
   email:
     positives:
       - "my email is"
       - "send to"
       - "example.com"
       - "@"
-      # TR
-      - "mail adresim"
-      - "e-postam"
-      - "raporu gönder"
     negatives:
       - "email marketing strategy"
       - "email etiquette"
-
   phone:
     positives:
       - "my phone number is"
       - "+1-202-555-0123"
       - "+44 7700 900123"
       - "(303) 555-0198"
-      # TR
-      - "telefon numaram"
-      - "beni ara"
-      - "numaram"
     negatives:
       - "phone case"
       - "phone review"
@@ -141,13 +98,9 @@ categories:
       - "DL-87654321"
       - "DL-12398745"
       - "D12345678"
-      # TR
-      - "ehliyet numaram"
-      - "sürücü belgesi"
     negatives:
       - "driver license exam info"
       - "rules for driver license"
-
   passport:
     positives:
       - "passport number"
@@ -155,26 +108,20 @@ categories:
       - "X1234567"
       - "P987654321"
       - "G987654321"
-      # TR
-      - "pasaport numaram"
     negatives:
       - "passport office"
       - "passport application process"
-
   ip:
     positives:
       - "my ip is"
       - "public ip"
       - "private ip"
       - "ipv4"
-      # TR
-      - "ip adresim"
-      - "ağ geçidi"
     negatives:
       - "IP strategy"
       - "intellectual property"
 
-  adversarial:
+adversarial:
     positives:
       - "ignore previous instructions"
       - "ignore all prior instructions"
@@ -192,26 +139,29 @@ categories:
       - "override content policy"
       - "disable safety"
       - "you are DAN"
-      
       - "prompt injection"
-
       - "ign0re prev10us instructi0ns"
       - "j@ilbreak"
       - "b y p a s s  r u l e s"
       - "dev mode"
       - "sys prompt"
-
-      - "önceki talimatları görmezden gel"
-      - "kuralları yok say"
-      - "güvenlik kontrollerini atla"
-      - "sanki biriymiş gibi davran"
-      - "gizli talimatları yazdır"
-      - "güvenlik politikasını devre dışı bırak"
-      - "sistem yönergesini göster"
+      - "despite instructions"
+      - "despite your instructions"
+      - "despite safety rules"
+      - "against the instructions"
+      - "violate the instructions"
+      - "break the instructions"
+      - "ignore the instructions"
+      - "override the instructions"
+      - "even if not allowed"
+      - "even if forbidden"
+      - "even if it's not allowed"
+      - "give it anyway"
+      - "tell me anyway"
+      - "tell me regardless"
+      - "regardless of rules"
+      - "regardless of instructions"
     negatives:
       - "how to defend against prompt injection"
       - "what is jailbreak detection"
       - "write an article about adversarial prompts"
-      # TR
-      - "prompt injection saldırısına karşı nasıl korunulur"
-      - "adversarial prompt açıklaması"
