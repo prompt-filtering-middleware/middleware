@@ -8,9 +8,9 @@ from app.semantic.rules_loader import load_rules
 
 @dataclass
 class SemanticResult:
-    label: str         # "sensitive" | "non_sensitive"
-    category: str      # "adversarial" | "health" | "address" | ...
-    score: float       # pozitif - alpha*negatif (0..1 arası normalize değil)
+    label: str         # sensitive | non_sensitive
+    category: str      # adversarial | health | address 
+    score: float       # positive - alpha*negative (0-1 not normalized)
     pos_top: List[Tuple[str, float]]
     neg_top: List[Tuple[str, float]]
 

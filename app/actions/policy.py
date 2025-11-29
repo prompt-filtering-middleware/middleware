@@ -1,9 +1,8 @@
 from typing import Dict, List, Tuple
 
-# Basit enforcement map (PoC):
-#  - block: critic leak (api_key, card, TCKN, IBAN, password etc.)
-#  - mask : personal but not critic (email, phone, dob, ip, mac etc.)
-#  - warn : high FP risk - just a warning
+#  block: critic leak (api_key, card, TCKN, IBAN, password etc.)
+#  mask : personal but not critic (email, phone, dob, ip, mac etc.)
+#  warn : high FP risk - just a warning
 POLICY: Dict[str, str] = {
     "api_key": "block",
     "api_key.aws_access_key": "block",
@@ -39,11 +38,11 @@ ENFORCEMENT = {
 
 
 def decide_actions(hits: List[Dict]) -> Tuple[str, List[str]]:
-    """
-    hits: {"type": "...", "span": (s,e), "value": "..."} list
-    output: (action, warnings[])
-    Hardest action is taken if multiple types are detected.
-    """
+    
+   # hits: {"type": "...", "span": (s,e), "value": "..."} 
+   # output: (action, warnings[])
+   # Hardest action is taken if multiple types are detected.
+    
     has_block = False
     has_mask = False
     has_warn = False
